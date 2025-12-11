@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="${title}">Заглавие</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<header>
+    <h1 th:text="${title}">Заглавие на статията</h1>
+    <p>Автор: <span th:text="${author}">Автор</span> — <span th:text="${points}">0</span> искри</p>
+</header>
+
+<main>
+    <!-- Thymeleaf ще вкара HTML съдържанието тук -->
+    <div th:utext="${content}">Съдържание на статията</div>
+</main>
+</body>
+</html>
