@@ -3,12 +3,41 @@ import static spark.Spark.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import sql.Log;
+import sql.Query;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class Main {
     private static TemplateEngine templateEngine;
+
+    private static User getUserById(int id){
+
+        int max = Integer.parseInt(
+                Query.getFirstRow(
+                        Objects.requireNonNull(
+                                Query.getResult(
+                                        "Select count(*) from Users where id is not null"
+                                )
+                        )
+                )
+                        [0]);
+
+        if(id > max) return null;
+
+        var result = Query.getFirstRow(
+                Objects.requireNonNull(
+                        Query.getResult(
+                        "Select * from users where id = %d".formatted(id)
+                    )
+                )
+        );
+
+        return new User(id, result[1], result[2], Integer.parseInt(result[3]));
+    }
 
     public static void main(String[] args) {
         port(4567);
@@ -27,14 +56,20 @@ public class Main {
         templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(resolver);
 
+        Log.info("Template Engine Initialized");
+        Log.info("localhost:%s/user/".formatted(4567));
+
         // Примерен route
-        get("/article/:id", (req, res) -> {
+        get("/user/:id", (req, res) -> {
             // Тук нормално четеш от DB; за пример — хардкоднати данни
             String id = req.params("id");
+
+            User user = getUserById(Integer.parseInt(id));
+
             Map<String, Object> model = new HashMap<>();
-            model.put("title", "Примерна статия #" + id);
-            model.put("author", "Иван Петров");
-            model.put("points", 12);
+            model.put("title", "Потребител #" + user.id());
+            model.put("author", "%s %s".formatted(user.name(), user.lastName()));
+            model.put("points", user.stars());
             // content може да съдържа HTML (p, img и т.н.)
             model.put("content", "<p>y = 8/12x; x = %s -> %d</p>".formatted(id,(Integer.parseInt(id)*8/12)));
 

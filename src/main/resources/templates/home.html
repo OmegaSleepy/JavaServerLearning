@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Умения+</title>
+</head>
+<body>
+<h1>Добре дошъл, <span th:text="${username}"></span>!</h1>
+
+<p>Това е защитена страница.</p>
+
+<form action="/logout" method="post">
+  <button type="submit">Изход</button>
+</form>
+</body>
+</html>
