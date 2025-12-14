@@ -1,0 +1,10 @@
+package downloadMusicServer;
+
+public class Test {
+    public static void main (String[] args) {
+        System.out.println(
+                new java.io.File("music-").getAbsolutePath()
+        );
+
+    }
+}

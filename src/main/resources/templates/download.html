@@ -61,12 +61,16 @@
 <div class="log">
     <h2>Music Download</h2>
     <form action = "/download" method="post">
-        
-        <label for="single">Enter a single url</label>
-        <input name = "single" type="text" placeholder="Enter music url" />
 
-        <label for="album">Enter album url</label>
-        <input name = "album" type="text" placeholder="Enter album url" />
+        <select name = "operation">
+            <option value="single">Single</option>
+            <option value="album">Album</option>
+            <option value="playlist">Playlist</option>
+        </select>
+
+        <label for="single">Enter the full url</label>
+        <input name = "url" type="text" placeholder="Enter music url" />
+
         <button type="submit">Download Music File</button>
     </form>
 </div>
