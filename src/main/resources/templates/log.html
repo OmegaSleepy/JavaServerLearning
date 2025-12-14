@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        :root {
+            --light-blue: #add8e6;
+            --lime-green: #dbf5d0;
+            --border-radius: 10px;
+        }
+
+        body{
+            font-family: "UD Digi Kyokasho NK-B", "Bodoni MT Poster Compressed";
+            background-image: linear-gradient(#f0f8ff, #e6e6fa);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            align-items: center;
+        }
+
+        h2 {
+            text-align: center;
+            border-radius: var(--border-radius);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            border-radius: var(--border-radius);
+        }
+
+        label, input, select, button {
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+        }
+
+        input, select, button, option {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+        }
+
+        .log {
+            padding: 15px;
+            border: 2px dashed #8595a3;
+            margin: auto;
+            width: 200px;
+            background-image:
+                    linear-gradient(
+                            var(--lime-green), var(--light-blue)
+                    );
+            border-radius: var(--border-radius);
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>Send  to console</h2>
+<div class="log">
+    <form action="/log" method="post">
+        <label>Log to console</label>
+        <input name="string" />
+
+        <!-- html -->
+        <label for="logOperation">Operation</label>
+        <select name="logOperation" id="logOperation" required>
+            <option value="" disabled selected>Select operation</option>
+            <option value="info">info</option>
+            <option value="warn">warn</option>
+            <option value="error">error</option>
+            <option value="execute">execute</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

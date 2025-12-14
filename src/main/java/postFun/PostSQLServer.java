@@ -4,10 +4,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import sql.Log;
-import sql.Query;
 
 import static spark.Spark.*;
+import static util.Log.*;
 
 public class PostSQLServer {
 
@@ -15,7 +14,10 @@ public class PostSQLServer {
 
     public static void main (String[] args) {
 
-        port(8088);
+
+
+        ipAddress("0.0.0.0");
+        port(4567);
         staticFileLocation("/public");
 
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
@@ -28,28 +30,37 @@ public class PostSQLServer {
         templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(resolver);
 
-        get("/query", (req,res) -> {
+
+        get("/log", (req, res) -> {
 
             Context context = new Context();
 
-            String html = templateEngine.process("query", context);
+            String html = templateEngine.process("log", context);
             res.type("text/html; charset=UTF-8");
 
             return html;
-
         });
 
-        post("/query",(req,res) -> {
-            String query = req.queryParams("query");
-            Log.info(query);
-            if(query!=null){
-                Query.getResult(query);
+        post("/log", (req,res) -> {
+
+            String text = req.queryParams("string");
+            String logOperation = req.queryParams("logOperation");
+
+            switch (logOperation) {
+                case "info" -> info(text);
+                case "error" -> error(text);
+                case "warn" -> warn(text);
+                case "execute" -> exec(text);
             }
 
-            res.redirect("/query");
+            res.redirect("/log");
 
             return res;
+        });
 
+        get("/", (req, res) ->{
+            res.redirect("/query");
+            return res;
         });
     }
 
