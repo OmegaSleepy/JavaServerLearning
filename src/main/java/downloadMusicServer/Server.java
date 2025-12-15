@@ -86,8 +86,6 @@ public class Server {
 
                 AlbumZipper.zipAlbum(("temp" + number),filepath, Path.of("temp/"));
 
-
-
             }
 
 

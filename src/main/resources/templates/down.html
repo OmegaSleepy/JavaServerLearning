@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/css/style.css">
-
     <style>
         :root {
             --light-blue: #add8e6;
@@ -13,7 +12,7 @@
         }
 
         body{
-            font-family: "UD Digi Kyokasho NK-B", "Bodoni MT Poster Compressed";
+            font-family: "SansSerif",sans-serif;
             background-image: linear-gradient(#f0f8ff, #e6e6fa);
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -54,28 +53,17 @@
                     );
             border-radius: var(--border-radius);
         }
+
     </style>
 </head>
 <body>
 
-<h2>Send to console</h2>
 <div class="log">
-    <form action="/log" method="post">
-        <label>Log to console</label>
-        <input name="string" />
-
-        <!-- html -->
-        <label for="logOperation">Operation</label>
-        <select name="logOperation" id="logOperation" required>
-            <option value="" disabled selected>Select operation</option>
-            <option value="info">info</option>
-            <option value="warn">warn</option>
-            <option value="error">error</option>
-            <option value="execute">execute</option>
-        </select>
-
-        <button type="submit">Submit</button>
+    <form action="/down" method="post">
+        <label>Download the file</label>
+        <button type="submit">click</button>
     </form>
+
 </div>
 
 </body>

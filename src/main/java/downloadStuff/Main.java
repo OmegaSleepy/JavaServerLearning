@@ -1,17 +1,17 @@
-package postFun;
+package downloadStuff;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import static spark.Spark.*;
-import static util.Log.*;
 
-public class PostSQLServer {
+public class Main {
 
     private static TemplateEngine templateEngine;
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
+
 
         ipAddress("0.0.0.0");
         port(4567);
@@ -27,38 +27,34 @@ public class PostSQLServer {
         templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(resolver);
 
-
-        get("/log", (req, res) -> {
+        get("/down", (req, res) ->{
 
             Context context = new Context();
 
-            String html = templateEngine.process("log", context);
+            String html = templateEngine.process("down", context);
             res.type("text/html; charset=UTF-8");
 
             return html;
         });
 
-        post("/log", (req,res) -> {
+        get("/", (req, res) -> "Hello");
 
-            String text = req.queryParams("string");
-            String logOperation = req.queryParams("logOperation");
+//        post("/down", (req, res) ->{
+//
+//            res.type("text/plain");
+//
+//            res.header("Content-Disposition","attachment; filename=\"something\"");
+//
+//            Path path = Path.of("gpp.txt");
+//
+//            try (InputStream in = new FileInputStream(path.toAbsolutePath().toFile())) {
+//                OutputStream out = res.raw().getOutputStream();
+//                in.transferTo(out);
+//            }
+//
+//            return res;
+//        });
 
-            switch (logOperation) {
-                case "info" -> info(text);
-                case "error" -> error(text);
-                case "warn" -> warn(text);
-                case "execute" -> exec(text);
-            }
-
-            res.redirect("/log");
-
-            return res;
-        });
-
-        get("/", (req, res) ->{
-            res.redirect("/query");
-            return res;
-        });
     }
 
 }

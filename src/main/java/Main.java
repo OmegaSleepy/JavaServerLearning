@@ -13,74 +13,74 @@
 //import java.util.logging.Logger;
 //
 //public class Main {
-//    private static TemplateEngine templateEngine;
+//   private static TemplateEngine templateEngine;
+////
+////    private static User getUserById(int id){
+////
+////        int max = Integer.parseInt(
+////                Result.getFirstRow(
+////                        Objects.requireNonNull(
+////                                Query.fromString(
+////                                        "Select count(*) from Users where id is not null"
+////                                )
+////                        )
+////                )
+////                        [0]);
+////
+////        if(id > max) return null;
+////
+////        var result = Result.getFirstRow(
+////                Objects.requireNonNull(
+////                        Query.fromString(
+////                        "Select * from users where id = %d".formatted(id)
+////                    )
+////                )
+////        );
+////
+////        return new User(id, result[1], result[2], Integer.parseInt(result[3]));
+////    }
+////
+//   public static void main(String[] args) {
+//       port(4567);
 //
-//    private static User getUserById(int id){
+//       // Сервиране на статични файлове от resources/public
+//       staticFileLocation("/public");
 //
-//        int max = Integer.parseInt(
-//                Result.getFirstRow(
-//                        Objects.requireNonNull(
-//                                Query.fromString(
-//                                        "Select count(*) from Users where id is not null"
-//                                )
-//                        )
-//                )
-//                        [0]);
+//       // Конфигуриране на Thymeleaf
+//       ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
+//       resolver.setPrefix("/templates/");   // път в resources
+//       resolver.setSuffix(".html");
+//       resolver.setTemplateMode("HTML");
+//       resolver.setCharacterEncoding("UTF-8");
+//       resolver.setCacheable(false); // за разработка: true в продукция
 //
-//        if(id > max) return null;
+//       templateEngine = new TemplateEngine();
+//       templateEngine.setTemplateResolver(resolver);
 //
-//        var result = Result.getFirstRow(
-//                Objects.requireNonNull(
-//                        Query.fromString(
-//                        "Select * from users where id = %d".formatted(id)
-//                    )
-//                )
-//        );
+//       Log.info("Template Engine Initialized");
+//       Log.info("localhost:%s/user/".formatted(4567));
 //
-//        return new User(id, result[1], result[2], Integer.parseInt(result[3]));
-//    }
+//       // Примерен route
+//       get("/user/:id", (req, res) -> {
+//           // Тук нормално четеш от DB; за пример — хардкоднати данни
+//           String id = req.params("id");
 //
-//    public static void main(String[] args) {
-//        port(4567);
+//           User user = getUserById(Integer.parseInt(id));
 //
-//        // Сервиране на статични файлове от resources/public
-//        staticFileLocation("/public");
+//           Map<String, Object> model = new HashMap<>();
+//           model.put("title", "Потребител #" + user.id());
+//           model.put("author", "%s %s".formatted(user.name(), user.lastName()));
+//           model.put("points", user.stars());
+//           // content може да съдържа HTML (p, img и т.н.)
+//           model.put("content", "<p>y = 8/12x; x = %s -> %d</p>".formatted(id,(Integer.parseInt(id)*8/12)));
 //
-//        // Конфигуриране на Thymeleaf
-//        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-//        resolver.setPrefix("/templates/");   // път в resources
-//        resolver.setSuffix(".html");
-//        resolver.setTemplateMode("HTML");
-//        resolver.setCharacterEncoding("UTF-8");
-//        resolver.setCacheable(false); // за разработка: true в продукция
+//           Context ctx = new Context();
+//           ctx.setVariables(model);
 //
-//        templateEngine = new TemplateEngine();
-//        templateEngine.setTemplateResolver(resolver);
-//
-//        Log.info("Template Engine Initialized");
-//        Log.info("localhost:%s/user/".formatted(4567));
-//
-//        // Примерен route
-//        get("/user/:id", (req, res) -> {
-//            // Тук нормално четеш от DB; за пример — хардкоднати данни
-//            String id = req.params("id");
-//
-//            User user = getUserById(Integer.parseInt(id));
-//
-//            Map<String, Object> model = new HashMap<>();
-//            model.put("title", "Потребител #" + user.id());
-//            model.put("author", "%s %s".formatted(user.name(), user.lastName()));
-//            model.put("points", user.stars());
-//            // content може да съдържа HTML (p, img и т.н.)
-//            model.put("content", "<p>y = 8/12x; x = %s -> %d</p>".formatted(id,(Integer.parseInt(id)*8/12)));
-//
-//            Context ctx = new Context();
-//            ctx.setVariables(model);
-//
-//            // Генерираме HTML чрез Thymeleaf
-//            String html = templateEngine.process("article", ctx);
-//            res.type("text/html; charset=UTF-8");
-//            return html;
-//        });
-//    }
+//           // Генерираме HTML чрез Thymeleaf
+//           String html = templateEngine.process("article", ctx);
+//           res.type("text/html; charset=UTF-8");
+//           return html;
+//       });
+//   }
 //}
