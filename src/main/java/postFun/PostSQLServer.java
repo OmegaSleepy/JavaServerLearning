@@ -59,7 +59,7 @@ public class PostSQLServer {
         });
 
         get("/", (req, res) ->{
-            res.redirect("/query");
+            res.redirect("/log");
             return res;
         });
     }
