@@ -68,8 +68,8 @@ like the facebook one
 # Shop  
 > /shop
 
-This is where users can unlock privileges for their blogs   
-Like more space or more photos
+> This is where users can unlock privileges for their blogs   
+> Like more space or more photos
 ---
 # Color theory 
 |  where                                   | what            |

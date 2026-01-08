@@ -2,7 +2,6 @@ package postFun;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import static spark.Spark.*;
@@ -13,8 +12,6 @@ public class PostSQLServer {
     private static TemplateEngine templateEngine;
 
     public static void main (String[] args) {
-
-
 
         ipAddress("0.0.0.0");
         port(4567);
@@ -32,7 +29,6 @@ public class PostSQLServer {
 
 
         get("/log", (req, res) -> {
-
             Context context = new Context();
 
             String html = templateEngine.process("log", context);

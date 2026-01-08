@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="loadBtn">Load data</button>
+
+<div id="output"></div>
+
+<script>
+    document.getElementById("loadBtn").addEventListener("click", () => {
+        fetch("/api/data")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("output").innerText =
+                    data.message + " | " + data.value;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
+
+</body>
+</html>
