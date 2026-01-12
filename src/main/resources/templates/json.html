@@ -17,25 +17,41 @@
 <div id="output" class="centered">Click Update</div>
 
 <script>
-    document.getElementById("updBtn").addEventListener("click", () => {
-        fetch("/api/data?update=false")
-            .then(res => res.json())
+    setInterval(() => {
+        fetch("api/data", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ increment: false })
+        }).then(response => response.json())
             .then(data => {
-                document.getElementById("output").innerText =
-                    data.message + " | " + data.value;
+                document.getElementById("output").innerHTML =
+                    data.message + " | " + data.count;
             })
-            .catch(err => console.error(err));
-    });
+    }, 50)
 
-    document.getElementById("incrementBtn").addEventListener("click", () => {
-        fetch("/api/data?update=true")
-            .then(res => res.json())
+    document.getElementById("updBtn").onclick = function(){
+        fetch("api/data", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ increment: false })
+        }).then(response => response.json())
+        .then(data => {
+            document.getElementById("output").innerHTML =
+                data.message + " | " + data.count;
+        })
+    }
+
+    document.getElementById("incrementBtn").onclick = function(){
+        fetch("api/data", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ increment: true })
+        }).then(response => response.json())
             .then(data => {
-                document.getElementById("output").innerText =
-                    data.message + " | " + data.value;
+                document.getElementById("output").innerHTML =
+                    data.message + " | " + data.count;
             })
-            .catch(err => console.error(err));
-    });
+    }
 </script>
 
 </body>

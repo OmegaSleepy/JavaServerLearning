@@ -1,4 +1,4 @@
-package downloadMusicServer;
+package old.downloadMusicServer;
 
 public class Test {
     public static void main (String[] args) {

@@ -1,4 +1,4 @@
-package posts;
+package util;
 
 public enum MediaType {
 

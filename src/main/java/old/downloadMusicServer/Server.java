@@ -1,4 +1,4 @@
-package downloadMusicServer;
+package old.downloadMusicServer;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static downloadMusicServer.DownloadMusicKt.runPython;
-import static downloadMusicServer.UtilKt.*;
+import static old.downloadMusicServer.DownloadMusicKt.runPython;
 import static spark.Spark.*;
 
 public class Server {
@@ -52,9 +51,9 @@ public class Server {
             String configuredUrl = "";
 
             switch (req.queryParams("operation")) {
-                case "single" -> configuredUrl = packageSingles(Collections.singletonList(url));
-                case "album" -> configuredUrl = packageAlbums(Collections.singletonList(url));
-                case "playlist" -> configuredUrl = packagePlaylists(Collections.singletonList(url));
+                case "single" -> configuredUrl = old.downloadMusicServer.UtilKt.packageSingles(Collections.singletonList(url));
+                case "album" -> configuredUrl = old.downloadMusicServer.UtilKt.packageAlbums(Collections.singletonList(url));
+                case "playlist" -> configuredUrl = old.downloadMusicServer.UtilKt.packagePlaylists(Collections.singletonList(url));
             }
 
             runPython(List.of(configuredUrl).toArray(new String[0]));

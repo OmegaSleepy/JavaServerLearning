@@ -1,10 +1,10 @@
-package posts;
+package old.posts;
 
-import com.google.gson.Gson;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import util.Log;
+import util.MediaType;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +37,7 @@ public class Server {
             Context context = new Context();
 
             String html = templateEngine.process("blogPostCreator", context);
-            res.type(MediaType.HTML.value);
+            res.type(MediaType.HTML.getValue());
 
             return html;
         });

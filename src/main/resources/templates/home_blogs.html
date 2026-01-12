@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<style>
+    /* ===== General Page Styling ===== */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    #holder {
+        width: 90%;
+        max-width: 1000px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    /* ===== Blog Card ===== */
+    .blog {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        padding: 20px 25px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .blog:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    /* ===== Title ===== */
+    .blog-title {
+        font-size: 1.8rem;
+        color: #222222;
+        margin: 0 0 10px 0;
+    }
+
+    /* ===== Tag ===== */
+    .blog-tag {
+        font-size: 0.9rem;
+        color: #888888;
+        font-style: italic;
+        margin: 0 0 15px 0;
+    }
+
+    /* ===== Excerpt ===== */
+    .blog-excerpt {
+        font-size: 1rem;
+        color: #555555;
+        margin-bottom: 15px;
+    }
+
+    /* ===== Full Content ===== */
+    .blog-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #333333;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+        .blog {
+            padding: 15px 20px;
+        }
+
+        .blog-title {
+            font-size: 1.5rem;
+        }
+    }
+
+</style>
+
+<body>
+
+<div id="holder">
+
+</div>
+
+</body>
+
+<script>
+
+    function createElement(tag, text, classname){
+        const element = document.createElement(tag);
+        element.innerHTML = text;
+        if(classname){element.classList.add(classname);}
+        return element;
+    }
+
+    async function loadStuff() {
+        let response;
+        try {
+            response = await fetch("/api/blog/blogs");
+
+            const select = document.getElementById("holder");
+
+            const data = await response.json();
+
+            data.forEach(element => {
+                console.log(element);
+                const blog = document.createElement("div");
+                blog.classList.add("blog");
+
+                blog.append(
+                    createElement("h1", element.title,"blog-title"),
+                    createElement("p", element.tag,"blog-tag"),
+                    createElement("p", element.excerpt,"blog-excerpt"),
+                    createElement("p", element.content,"blog-content")
+                )
+
+                select.append(blog);
+            })
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    loadStuff();
+
+</script>
+</html>

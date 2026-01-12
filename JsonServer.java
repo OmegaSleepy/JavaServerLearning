@@ -4,7 +4,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import static spark.Spark.*;
-import static util.Log.*;
 
 public class JsonServer {
 

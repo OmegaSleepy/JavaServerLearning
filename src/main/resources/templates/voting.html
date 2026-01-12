@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Class Voting Game</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background:#f5f5f5; display:flex; justify-content:center; }
+        #holder { width: 80%; max-width:800px; margin-top:50px; }
+        button { margin:5px; padding:8px 12px; font-size:16px; cursor:pointer; }
+        .bar { background:#4caf50; color:white; padding:5px; margin:3px 0; border-radius:4px; }
+    </style>
+</head>
+<body>
+<div id="holder">
+    <h2>Vote!</h2>
+    <button onclick="vote('Option A')">Option A</button>
+    <button onclick="vote('Option B')">Option B</button>
+    <button onclick="vote('Option C')">Option C</button>
+
+    <h2>Results:</h2>
+    <div id="voteResults"></div>
+
+    <h2>Admin Actions</h2>
+    <button onclick="authorizeAdmin()">Enter Secret</button>
+    <button onclick="resetVotes()">Reset Votes</button>
+
+    <script>
+        const voteResults = document.getElementById("voteResults");
+
+        // Vote function
+        async function vote(option) {
+            const res = await fetch("/api/vote?option=" + option, { method:"POST" });
+            const data = await res.json();
+            if(data.status === "already_voted") alert("You already voted!");
+            else updateVotesDisplay(data);
+        }
+
+        // Load votes every second
+        async function loadVotes() {
+            const res = await fetch("/api/votes");
+            const data = await res.json();
+            updateVotesDisplay(data);
+        }
+        setInterval(loadVotes, 1000);
+
+        // Update vote bars
+        function updateVotesDisplay(votes) {
+            voteResults.innerHTML = "";
+            for(const [option, count] of Object.entries(votes)){
+                const bar = document.createElement("div");
+                bar.className = "bar";
+                bar.style.width = (count*20 + 50) + "px";
+                bar.innerText = `${option}: ${count}`;
+                voteResults.appendChild(bar);
+            }
+        }
+
+        async function authorizeAdmin() {
+            // Ask for secret
+            const secret = prompt("Enter admin secret:");
+            if(!secret) return;
+
+            // Send POST to /api/auth with secret
+            const res = await fetch("/api/auth", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ secret })
+            });
+
+            const data = await res.json();
+            if(data.status === "authorized") {
+                alert("Admin access granted!");
+            } else {
+                alert("Wrong secret!");
+            }
+        }
+
+        // Only works if authorized
+        async function resetVotes() {
+            const res = await fetch("/api/reset", { method:"POST" });
+            const data = await res.json();
+            if(data.status === "unauthorized") alert("Not authorized!");
+            else {
+                alert("Votes reset!");
+                loadVotes(); // refresh vote display
+            }
+        }
+    </script>
+</div>
+</body>
+</html>

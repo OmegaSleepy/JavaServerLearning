@@ -1,11 +1,13 @@
+package old.other;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import posts.MediaType;
+import util.MediaType;
 import util.Log;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static spark.Spark.*;
 
@@ -13,8 +15,9 @@ public class JsonServer {
 
     private static TemplateEngine templateEngine;
 
-    private static AtomicInteger counter;
+    public static int counter = 0;
 
+    private static JsonParser jsonParser;
 
     public static void main(String[] args) {
         templateEngine = new TemplateEngine();
@@ -23,7 +26,7 @@ public class JsonServer {
         staticFileLocation("/public");
 
         Gson gson = new Gson();
-        counter = new AtomicInteger(0);
+        jsonParser = new JsonParser();
 
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         resolver.setPrefix("/templates/");   // път в resources
@@ -34,7 +37,20 @@ public class JsonServer {
         templateEngine.setTemplateResolver(resolver);
 
 
+        post("/api/data", (req, res) -> {
+            Log.exec(req.body());
+            JsonObject body = jsonParser.parse(req.body()).getAsJsonObject();
+            boolean increment = body.get("increment").getAsBoolean();
+
+            if(increment) {
+                counter++;
+            }
+
+            return new SimpleResponse("Hello", counter);
+        }, gson::toJson);
+
         get("/", (req, res) -> {
+            Log.exec(req.body());
             Context context = new Context();
 
             String html = templateEngine.process("json", context);
@@ -42,22 +58,8 @@ public class JsonServer {
 
             return html;
         });
-
-        get("/api/data", (req, res) -> {
-            Log.exec(req.toString());
-
-            int number = counter.get();
-
-            if(req.queryParams("update") != null){
-                if(req.queryParams("update").equals("true")){
-                    counter.incrementAndGet();
-                }
-            }
-
-           res.type(MediaType.JSON.getValue());
-           return new SimpleResponse("Hello", number);
-        }, gson::toJson
-        );
     }
-    public record SimpleResponse(String message, int value){}
+
+    public record SimpleResponse(String message, int count) {
+    }
 }
