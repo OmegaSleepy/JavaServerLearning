@@ -1,29 +1,29 @@
+package posts;
+
 import com.google.gson.Gson;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import posts.MediaType;
 import util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static spark.Spark.*;
+import static spark.Spark.get;
 
-public class JsonServer {
-
+public class Server {
     private static TemplateEngine templateEngine;
 
-    private static AtomicInteger counter;
+    public static AtomicInteger count;
 
 
     public static void main(String[] args) {
         templateEngine = new TemplateEngine();
-        ipAddress("0.0.0.0");
         port(4567);
         staticFileLocation("/public");
+        SQL.initDatabase();
 
-        Gson gson = new Gson();
-        counter = new AtomicInteger(0);
+        count = new AtomicInteger();
 
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         resolver.setPrefix("/templates/");   // път в resources
@@ -33,31 +33,26 @@ public class JsonServer {
         resolver.setCacheable(false); // за разработка: true в продукция
         templateEngine.setTemplateResolver(resolver);
 
-
-        get("/", (req, res) -> {
+        get("/create", (req, res) -> {
             Context context = new Context();
 
-            String html = templateEngine.process("json", context);
-            res.type(MediaType.HTML.getValue());
+            String html = templateEngine.process("blogPostCreator", context);
+            res.type(MediaType.HTML.value);
 
             return html;
         });
 
-        get("/api/data", (req, res) -> {
-            Log.exec(req.toString());
+        post("/api/blog", (req, res) -> {
+            String title = req.queryParams("title");
+            String body = req.queryParams("blog-body");
 
-            int number = counter.get();
+            SQL.addBlog(new BlogPost(title,body));
 
-            if(req.queryParams("update") != null){
-                if(req.queryParams("update").equals("true")){
-                    counter.incrementAndGet();
-                }
-            }
+            Log.info(title + " | " + body);
 
-           res.type(MediaType.JSON.getValue());
-           return new SimpleResponse("Hello", number);
-        }, gson::toJson
-        );
+            res.redirect("/create");
+
+            return res;
+        });
     }
-    public record SimpleResponse(String message, int value){}
 }

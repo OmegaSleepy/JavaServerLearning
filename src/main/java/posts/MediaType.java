@@ -1,3 +1,5 @@
+package posts;
+
 public enum MediaType {
 
     JSON("application/json"),

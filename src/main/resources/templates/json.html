@@ -3,15 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        .centered {
+            margin: auto;
+            font-size: 80px;
+        }
+    </style>
 </head>
 <body>
-<button id="loadBtn">Load data</button>
+<button id="updBtn">Update</button>
+<button id="incrementBtn">Increment</button>
 
-<div id="output"></div>
+<div id="output" class="centered">Click Update</div>
 
 <script>
-    document.getElementById("loadBtn").addEventListener("click", () => {
-        fetch("/api/data")
+    document.getElementById("updBtn").addEventListener("click", () => {
+        fetch("/api/data?update=false")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("output").innerText =
+                    data.message + " | " + data.value;
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.getElementById("incrementBtn").addEventListener("click", () => {
+        fetch("/api/data?update=true")
             .then(res => res.json())
             .then(data => {
                 document.getElementById("output").innerText =
