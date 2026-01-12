@@ -28,7 +28,7 @@
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            box-sizing: border-box;
             font-size: 16px;
         }
         textarea { height: 200px; resize: vertical; }
@@ -44,9 +44,74 @@
             transition: background 0.3s;
         }
         .btn-submit:hover { background-color: #0056b3; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-container {
+            width: 90%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .btn-create {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-create:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 600px) {
+            .blog { padding: 15px 20px; }
+            .blog-title { font-size: 1.5rem; }
+            .header-container { flex-direction: row; }
+            .logo { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
+
+<header>
+    <div class="header-container">
+        <a href="/" class="logo">Skills+</a>
+        <a href="/home" class="btn-create">View Posts</a>
+    </div>
+</header>
 
 <div class="form-container">
     <h2>Create New Post</h2>
@@ -75,8 +140,6 @@
         <button type="submit" class="btn-submit">Publish Post</button>
     </form>
 
-
-
 </div>
 
 <script>
@@ -86,14 +149,12 @@
             const response = await fetch("/api/blog/tags");
             if (!response.ok) throw new Error("Failed to fetch tags");
 
-            const tags = await response.json(); // ["Chemistry","Golf","Math", ...]
+            const tags = await response.json();
 
             const select = document.getElementById("category");
 
-            // Clear existing options
             select.innerHTML = "";
 
-            // Add each tag as an option
             tags.forEach(tag => {
                 const option = document.createElement("option");
                 option.value = tag;
@@ -108,9 +169,8 @@
     }
 
     document.getElementById("blogForm").addEventListener("submit", async (event) => {
-        event.preventDefault(); // stop the normal form submit
+        event.preventDefault();
 
-        // collect form values
         const data = {
             title: document.getElementById("title").value,
             category: document.getElementById("category").value,
@@ -131,7 +191,6 @@
             console.log("Server response:", result);
 
             alert("Blog post submitted successfully!");
-            // optionally reset the form
             document.getElementById("blogForm").reset();
         } catch (err) {
             console.error("Error submitting blog post:", err);

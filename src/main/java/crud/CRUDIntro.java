@@ -10,15 +10,16 @@ import util.DBUtil;
 import util.Log;
 import util.MediaType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static spark.Spark.*;
 
 public class CRUDIntro {
 
     private static TemplateEngine templateEngine;
-
-    public static int counter = 0;
 
     private static JsonParser jsonParser;
 
@@ -58,6 +59,22 @@ public class CRUDIntro {
             return templateEngine.process("home_blogs", new Context());
         }));
 
+        get("blog/:id", (request, response) -> {
+            response.type(MediaType.HTML.getValue());
+
+            Map<String, Object> model = new HashMap<>();
+
+            model.put("id", request.params(":id"));
+            Blog blog = DBUtil.getBlogById(Integer.parseInt(request.params(":id")));
+
+            model.put("blog", blog);
+
+            Context context = new Context();
+            context.setVariables(model);
+
+            return templateEngine.process("blog_page", context);
+        });
+
         post("/api/blog/content", ((request, response) -> {
 
             JsonObject body = jsonParser.parse(request.body()).getAsJsonObject();
@@ -68,7 +85,7 @@ public class CRUDIntro {
             String excerpt = body.get("excerpt").getAsString();
             String content = body.get("content").getAsString();
 
-            Blog blog = new Blog(title,category,excerpt,content);
+            Blog blog = new Blog(0, title,category,excerpt,content);
 
             Log.info(blog.toString());
             DBUtil.addBlog(blog);
@@ -90,7 +107,11 @@ public class CRUDIntro {
         get("api/blog/blogs", (request, response) -> {
             response.type(MediaType.JSON.getValue());
             return DBUtil.getBlogList();
+        }, gson::toJson);
 
+        get("api/blog/short_blogs", (request, response) -> {
+            response.type(MediaType.JSON.getValue());
+            return DBUtil.getBlogWithoutContents();
         }, gson::toJson);
 
     }

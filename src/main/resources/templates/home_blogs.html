@@ -2,94 +2,125 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+    <title>My Blog</title>
+    <style>
+        /* ===== General Page Styling ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Changed to column to stack header and content */
+            align-items: center;
+        }
 
-<style>
-    /* ===== General Page Styling ===== */
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-    }
+        /* ===== Header Styling ===== */
+        header {
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-    #holder {
-        width: 90%;
-        max-width: 1000px;
-        padding: 20px;
-        box-sizing: border-box;
-    }
+        .header-container {
+            width: 90%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    /* ===== Blog Card ===== */
-    .blog {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        padding: 20px 25px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
 
-    .blog:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
+        .btn-create {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
 
-    /* ===== Title ===== */
-    .blog-title {
-        font-size: 1.8rem;
-        color: #222222;
-        margin: 0 0 10px 0;
-    }
+        .btn-create:hover {
+            background-color: #0056b3;
+        }
 
-    /* ===== Tag ===== */
-    .blog-tag {
-        font-size: 0.9rem;
-        color: #888888;
-        font-style: italic;
-        margin: 0 0 15px 0;
-    }
+        /* ===== Content Holder ===== */
+        #holder {
+            width: 90%;
+            max-width: 1000px;
+            padding: 40px 20px; /* Added more top padding */
+            box-sizing: border-box;
+        }
 
-    /* ===== Excerpt ===== */
-    .blog-excerpt {
-        font-size: 1rem;
-        color: #555555;
-        margin-bottom: 15px;
-    }
-
-    /* ===== Full Content ===== */
-    .blog-content {
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: #333333;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 600px) {
+        /* ===== Blog Card ===== */
         .blog {
-            padding: 15px 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px 25px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .blog:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .blog-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            color: #222222;
+            margin: 0 0 10px 0;
         }
-    }
 
-</style>
+        .blog-tag {
+            font-size: 0.9rem;
+            color: #888888;
+            font-style: italic;
+            margin: 0 0 15px 0;
+        }
 
+        .blog-excerpt {
+            font-size: 1rem;
+            color: #555555;
+            margin-bottom: 15px;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .blog { padding: 15px 20px; }
+            .blog-title { font-size: 1.5rem; }
+            .header-container { flex-direction: row; }
+            .logo { font-size: 1.2rem; }
+        }
+    </style>
+</head>
 <body>
 
-<div id="holder">
+<header>
+    <div class="header-container">
+        <a href="/" class="logo">Skills+</a>
+        <a href="/create" class="btn-create">+ Create Post</a>
+    </div>
+</header>
 
+<div id="holder">
 </div>
 
-</body>
-
 <script>
-
     function createElement(tag, text, classname){
         const element = document.createElement(tag);
         element.innerHTML = text;
@@ -98,34 +129,33 @@
     }
 
     async function loadStuff() {
-        let response;
         try {
-            response = await fetch("/api/blog/blogs");
-
+            const response = await fetch("/api/blog/blogs");
             const select = document.getElementById("holder");
-
             const data = await response.json();
 
             data.forEach(element => {
-                console.log(element);
                 const blog = document.createElement("div");
                 blog.classList.add("blog");
+
+                blog.style.cursor = "pointer";
+                blog.onclick = () => {
+                    window.location.href = `/blog/${element.id}`;
+                };
 
                 blog.append(
                     createElement("h1", element.title,"blog-title"),
                     createElement("p", element.tag,"blog-tag"),
-                    createElement("p", element.excerpt,"blog-excerpt"),
-                    createElement("p", element.content,"blog-content")
+                    createElement("p", element.excerpt,"blog-excerpt")
                 )
-
                 select.append(blog);
             })
         } catch (err) {
-            console.error(err);
+            console.error("Failed to load blogs:", err);
         }
     }
 
     loadStuff();
-
 </script>
+</body>
 </html>
