@@ -23,6 +23,10 @@ public class CRUDIntro {
 
     private static JsonParser jsonParser;
 
+    private final static List<String> categories = List.of("Mathematics", "Science", "Biology", "Chemistry", "Physics", "English", "History",
+            "Geography", "Art", "Music", "Computer Science", "Economics", "Philosophy",
+            "Literature");
+
     public static void main(String[] args) {
 
         templateEngine = new TemplateEngine();
@@ -76,9 +80,11 @@ public class CRUDIntro {
         });
 
         post("/api/blog/content", ((request, response) -> {
+            response.type(MediaType.JSON.getValue());
+
 
             JsonObject body = jsonParser.parse(request.body()).getAsJsonObject();
-
+//            JsonObject dd = gson.fromJson(request.body(), JsonObject.class);
 
             String title = body.get("title").getAsString();
             String category = body.get("category").getAsString();
@@ -87,20 +93,18 @@ public class CRUDIntro {
 
             Blog blog = new Blog(0, title,category,excerpt,content);
 
+            if(!isValidBlog(blog)) return "{\"status\":\"not ok\"}";
+
             Log.info(blog.toString());
             DBUtil.addBlog(blog);
 
-            response.type(MediaType.JSON.getValue());
             return "{\"status\":\"ok\"}";
         }));
 
         get("/api/blog/tags", (request, response) -> {
-
             response.type(MediaType.JSON.getValue());
 
-            return List.of("Mathematics", "Science", "Biology", "Chemistry", "Physics", "English", "History",
-                    "Geography", "Art", "Music", "Computer Science", "Economics", "Philosophy",
-                    "Literature");
+            return categories;
 
         }, gson::toJson);
 
@@ -114,6 +118,15 @@ public class CRUDIntro {
             return DBUtil.getBlogWithoutContents();
         }, gson::toJson);
 
+    }
+
+    private static boolean isValidBlog(Blog blog) {
+        var titleL = blog.title().length();
+        if(titleL > 64) return false;
+        if(!categories.contains(blog.tag())) return false;
+        if(blog.excerpt().length() > 64) return false;
+        if(blog.content().length() > 8000) return false;
+        return true;
     }
 
 

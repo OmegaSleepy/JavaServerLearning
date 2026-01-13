@@ -114,10 +114,10 @@ public class DBUtil {
     public static Blog getBlogById(int id){
         String sql = "SELECT * FROM blogs WHERE id = ?";
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
                     return new Blog(
                             rs.getInt("id"),
