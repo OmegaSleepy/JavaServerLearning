@@ -90,18 +90,19 @@ public class DBUtil {
 
     public static List<Blog> getBlogWithoutContents() {
         List<Blog> blogList = new ArrayList<>();
+        String sql = "SELECT * FROM blogs limit 25";
 
-        try (ResultSet resultSet = executeSelect("""
-                    select * from blogs
-                    """)){
+        try (Connection conn = getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);){
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while (resultSet.next()) {
+                    int id =  resultSet.getInt("id");
+                    String title = resultSet.getString("title");
+                    String tag = resultSet.getString("tag");
+                    String excerpt = resultSet.getString("excerpt");
 
-            while (resultSet.next()) {
-                int id =  resultSet.getInt("id");
-                String title = resultSet.getString("name");
-                String category = resultSet.getString("category");
-                String excerpt = resultSet.getString("excerpt");
-
-                blogList.add(new Blog(id, title, category, excerpt, ""));
+                    blogList.add(new Blog(id, title, tag, excerpt, ""));
+                }
             }
 
         } catch (SQLException e) {
@@ -132,15 +133,29 @@ public class DBUtil {
         return null;
     }
 
-    public static List<Blog> getBlogsByCategory(String category) throws SQLException {
+    public static List<Blog> getBlogsByCategory(String category, String name) throws SQLException {
         List<Blog> blogList = new ArrayList<>();
-        String sql = "SELECT * FROM blogs WHERE tag = ? Limit 15";
+
+        boolean isAny = category.equalsIgnoreCase("any");
+        String sql = isAny
+                ? "SELECT * FROM blogs WHERE title LIKE ? LIMIT 15"
+                : "SELECT * FROM blogs WHERE tag = ? AND title LIKE ? LIMIT 15";
+
         try (Connection conn = getConnection();
-        PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, category);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            String nameSearch = "%" + name + "%";
+
+            if (isAny) {
+                pstmt.setString(1, nameSearch);
+            } else {
+                pstmt.setString(1, category);
+                pstmt.setString(2, nameSearch);
+            }
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    blogList.add( new Blog(
+                    blogList.add(new Blog(
                             rs.getInt("id"),
                             rs.getString("title"),
                             rs.getString("tag"),
@@ -149,8 +164,7 @@ public class DBUtil {
                     ));
                 }
             }
-            return blogList;
-
         }
+        return blogList;
     }
 }

@@ -14,9 +14,27 @@
     </div>
 </header>
 
-<button id="show">
-    Something
-</button>
+<div id="search" class="search">
+    <label for="category">Category</label>
+    <select id="category" name="category">
+    </select>
+
+    <br>
+
+    <label for="blog-name">Name</label>
+    <input type="text" id="blog-name">
+    <br>
+
+    <button id="show">
+        Search
+    </button>
+
+    <button id="clear">
+        Clear filters
+    </button>
+</div>
+
+
 
 
 
@@ -24,6 +42,26 @@
 </div>
 
 <script>
+
+    async function loadCategories() {
+        try {
+            const response = await fetch("/api/blog/tags");
+            if (!response.ok) throw new Error("Failed to fetch tags");
+            const tags = await response.json();
+            const select = document.getElementById("category");
+            select.innerHTML = "";
+            tags.forEach(tag => {
+                const option = document.createElement("option");
+                option.value = tag;
+                option.textContent = tag;
+                select.appendChild(option);
+            });
+            select.selectedIndex = select.options.length-1;
+        } catch (err) {
+            console.error("Error loading categories:", err);
+        }
+    }
+
     function createElement(tag, text, classname){
         const element = document.createElement(tag);
         element.innerHTML = text;
@@ -32,7 +70,21 @@
     }
 
     document.getElementById("show").addEventListener("click", function(){
-        loadStuff("/api/filter/post/English")
+        const category = document.getElementById("category").value
+        const name = document.getElementById("blog-name").value
+
+        const parameters = new URLSearchParams({
+            name: name,
+            category: category
+        });
+        loadStuff(`/api/filter/post/?${parameters.toString()}`)
+    })
+
+    document.getElementById("clear").addEventListener("click", function (){
+        const category_select = document.getElementById("category");
+        category_select.selectedIndex = category_select.options.length-1;
+        document.getElementById("blog-name").value = '';
+        loadStuff(`/api/filter/post/`)
     })
 
     async function loadStuff(url) {
@@ -65,6 +117,7 @@
     }
 
     loadStuff("/api/blog/blogs");
+    loadCategories();
 </script>
 </body>
 </html>

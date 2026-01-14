@@ -24,13 +24,8 @@ public class CRUDIntro {
     private static JsonParser jsonParser;
     static List<String> categories = List.of("Mathematics", "Science", "Biology", "Chemistry", "Physics", "English", "History",
             "Geography", "Art", "Music", "Computer Science", "Economics", "Philosophy",
-            "Literature");
+            "Literature", "None", "Any");
 
-
-
-    private final static List<String> categories = List.of("Mathematics", "Science", "Biology", "Chemistry", "Physics", "English", "History",
-            "Geography", "Art", "Music", "Computer Science", "Economics", "Philosophy",
-            "Literature");
 
     public static void main(String[] args) {
 
@@ -85,7 +80,9 @@ public class CRUDIntro {
 
                 return templateEngine.process("blog_page", context);
             } catch (Exception e) {
-                response.status(400);
+                response.status(404);
+                response.type(MediaType.JSON.getValue());
+                response.redirect("/home");
                 return "{\"status\":\"error\"}";
             }
 
@@ -102,6 +99,8 @@ public class CRUDIntro {
             String category = body.get("category").getAsString();
             String excerpt = body.get("excerpt").getAsString();
             String content = body.get("content").getAsString();
+
+            if(category.equalsIgnoreCase("Any")) category = "None";
 
             Blog blog = new Blog(0, title,category,excerpt,content);
 
@@ -140,10 +139,12 @@ public class CRUDIntro {
                 return blog.content();
 
             } catch (Exception e){
-                response.status(400);
+                response.status(404);
+                response.type(MediaType.JSON.getValue());
+                response.redirect("/home");
                 return "{\"status\":\"error\"}";
             }
-        } );
+        });
 
         get("api/general/styles", (request, response) -> {
             response.type("text/css");
@@ -186,12 +187,21 @@ public class CRUDIntro {
             }
         });
 
-        get("/api/filter/post/:category", (request, response) -> {
+        get("/api/filter/post/", (request, response) -> {
            response.type(MediaType.JSON.getValue());
-           String category = request.params(":category");
+           String category = request.queryParams("category");
+           String name = request.queryParams("name");
 
-           if(categories.contains(category)){
-               return DBUtil.getBlogsByCategory(category);
+           Log.exec(category + " " + name);
+
+           if(name == null) name = "";
+
+           if(category == null){
+               return DBUtil.getBlogWithoutContents();
+           }
+
+           if(categories.contains(category) && name.length()<32){
+               return DBUtil.getBlogsByCategory(category, name);
            }
 
            response.status(400);

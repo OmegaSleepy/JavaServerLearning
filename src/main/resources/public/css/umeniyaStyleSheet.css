@@ -296,3 +296,41 @@ hr {
 .form-container.split-mode {
     padding: 25px;
 }
+
+/* Specific overrides for the Markdown output */
+.post-content {
+    /* Change this from pre-wrap to normal */
+    white-space: normal;
+}
+
+/* Fix the list indentation and spacing */
+.post-content ul,
+.post-content ol {
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-content li {
+    margin-bottom: 0.5rem;
+}
+
+/* Ensure nested lists look correct */
+.post-content ul ul,
+.post-content ul ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Fix spacing for headers inside the markdown */
+.post-content h1,
+.post-content h2,
+.post-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+/* Fix spacing for paragraphs */
+.post-content p {
+    margin-bottom: 1.2rem;
+}
