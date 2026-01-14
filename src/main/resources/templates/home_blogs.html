@@ -3,110 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>My Blog</title>
-    <style>
-        /* ===== General Page Styling ===== */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column; /* Changed to column to stack header and content */
-            align-items: center;
-        }
-
-        /* ===== Header Styling ===== */
-        header {
-            width: 100%;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-container {
-            width: 90%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .btn-create {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-
-        .btn-create:hover {
-            background-color: #0056b3;
-        }
-
-        /* ===== Content Holder ===== */
-        #holder {
-            width: 90%;
-            max-width: 1000px;
-            padding: 40px 20px; /* Added more top padding */
-            box-sizing: border-box;
-        }
-
-        /* ===== Blog Card ===== */
-        .blog {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            padding: 20px 25px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .blog:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .blog-title {
-            font-size: 1.8rem;
-            color: #222222;
-            margin: 0 0 10px 0;
-        }
-
-        .blog-tag {
-            font-size: 0.9rem;
-            color: #888888;
-            font-style: italic;
-            margin: 0 0 15px 0;
-        }
-
-        .blog-excerpt {
-            font-size: 1rem;
-            color: #555555;
-            margin-bottom: 15px;
-        }
-
-        /* ===== Responsive ===== */
-        @media (max-width: 600px) {
-            .blog { padding: 15px 20px; }
-            .blog-title { font-size: 1.5rem; }
-            .header-container { flex-direction: row; }
-            .logo { font-size: 1.2rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="/api/general/styles">
 </head>
 <body>
 
@@ -116,6 +13,12 @@
         <a href="/create" class="btn-create">+ Create Post</a>
     </div>
 </header>
+
+<button id="show">
+    Something
+</button>
+
+
 
 <div id="holder">
 </div>
@@ -128,11 +31,17 @@
         return element;
     }
 
-    async function loadStuff() {
+    document.getElementById("show").addEventListener("click", function(){
+        loadStuff("/api/filter/post/English")
+    })
+
+    async function loadStuff(url) {
         try {
-            const response = await fetch("/api/blog/blogs");
+            const response = await fetch(url);
             const select = document.getElementById("holder");
             const data = await response.json();
+
+            select.replaceChildren();
 
             data.forEach(element => {
                 const blog = document.createElement("div");
@@ -155,7 +64,7 @@
         }
     }
 
-    loadStuff();
+    loadStuff("/api/blog/blogs");
 </script>
 </body>
 </html>

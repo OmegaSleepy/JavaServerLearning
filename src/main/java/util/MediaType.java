@@ -16,6 +16,7 @@ public enum MediaType {
     SEVEN_Z("application/x-7z-compressed"),
     TXT("text/plain"),
     HTML("text/html; charset=UTF-8"),
+    CSS("text/css"),
     CSV("text/csv"),
     PDF("application/pdf"),
     EXE("application/octet-stream");

@@ -111,7 +111,7 @@ public class DBUtil {
         return blogList;
     }
 
-    public static Blog getBlogById(int id){
+    public static Blog getBlogById(int id) throws SQLException {
         String sql = "SELECT * FROM blogs WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -128,9 +128,29 @@ public class DBUtil {
                     );
                 }
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public static List<Blog> getBlogsByCategory(String category) throws SQLException {
+        List<Blog> blogList = new ArrayList<>();
+        String sql = "SELECT * FROM blogs WHERE tag = ? Limit 15";
+        try (Connection conn = getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, category);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    blogList.add( new Blog(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("tag"),
+                            rs.getString("excerpt"),
+                            rs.getString("content")
+                    ));
+                }
+            }
+            return blogList;
+
+        }
     }
 }
