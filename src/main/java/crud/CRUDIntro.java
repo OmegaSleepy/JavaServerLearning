@@ -192,7 +192,7 @@ public class CRUDIntro {
            String category = request.queryParams("category");
            String name = request.queryParams("name");
 
-           Log.exec(category + " " + name);
+           Log.exec("Queried for " + category + " '" + name + "'");
 
            if(name == null) name = "";
 

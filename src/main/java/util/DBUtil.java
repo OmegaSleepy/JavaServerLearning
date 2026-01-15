@@ -66,7 +66,7 @@ public class DBUtil {
 
     public static List<Blog> getBlogList(){
         List<Blog> blogList = new ArrayList<>();
-        String sql = "SELECT * FROM blogs LIMIT 10";
+        String sql = "SELECT * FROM blogs ORDER BY id desc LIMIT 15";
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
@@ -90,7 +90,7 @@ public class DBUtil {
 
     public static List<Blog> getBlogWithoutContents() {
         List<Blog> blogList = new ArrayList<>();
-        String sql = "SELECT * FROM blogs limit 25";
+        String sql = "SELECT * FROM blogs ORDER BY id desc limit 25";
 
         try (Connection conn = getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);){
@@ -138,8 +138,8 @@ public class DBUtil {
 
         boolean isAny = category.equalsIgnoreCase("any");
         String sql = isAny
-                ? "SELECT * FROM blogs WHERE title LIKE ? LIMIT 15"
-                : "SELECT * FROM blogs WHERE tag = ? AND title LIKE ? LIMIT 15";
+                ? "SELECT * FROM blogs WHERE title LIKE ? ORDER BY id desc LIMIT 15"
+                : "SELECT * FROM blogs WHERE tag = ? AND title LIKE ? ORDER BY id desc LIMIT 15";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
